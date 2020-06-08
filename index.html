@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main>
+        <section>
+            <h1>Currency Converter</h1>
+            <div class="form">
+            <form action="">
+                <input type="text" name="" id="input1" > <span onclick="myFun1()">USD</span> <br>
+                <input type="text" name="" id="input2" > <span onclick="myFun2()">EUR</span> <br>
+                <a class="convert-button" id="button" onclick="convert()">Convert</a>
+            </form>
+            </div>
+        </section>
+
+        <div class="pop-up1" id="my-list">
+            <ul>
+                <!-- First list of currencies -->
+            </ul>
+            <div class="btn">
+                <button class="cancel-button1" id="button">Cancel</button>
+            </div>
+        </div>
+        <div class="pop-up2" id="my-list">
+            <ul>
+                <!-- Second list of currencies -->
+            </ul>
+            <div class="btn">
+                <button class="cancel-button2" id="button">Cancel</button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        made by Parahat Reis
+    </footer>
+
+
+<script>
+
+
+
+    function myFun1(){
+
+        document.querySelector('.pop-up1').style.display = 'grid';
+
+    }
+    document.querySelector('.cancel-button1').onclick = function(){
+
+        document.querySelector('.pop-up1').style.display = 'none';
+
+    }
+    function myFun2(){
+
+        document.querySelector('.pop-up2').style.display = 'grid';
+
+    }
+    document.querySelector('.cancel-button2').onclick = function(){
+
+        document.querySelector('.pop-up2').style.display = 'none';
+
+        }   
+
+    window.onload = currencies;
+    var name1 = 'United Stated Dollar';
+    var id1 = 'USD';
+    var name2 = 'Euro';
+    var id2 = 'EUR';
+    // https://openexchangerates.org/api/latest.json?app_id=e2a366b643ec4bc7ae09641ba13d3787
+
+
+
+    // https://free.currconv.com/api/v7/convert?q=USD_EUR&compact=ultra&apiKey=2c613b51e5104822513a
+
+
+    function currencies() {
+            
+            var xhttp = new XMLHttpRequest();
+            var ul1 = document.querySelector('.pop-up1').firstElementChild;
+            var ul2 = document.querySelector('.pop-up2').firstElementChild;
+                
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // console.log(this.responseText)
+                    var myObj2 = JSON.parse(this.responseText) 
+
+                    var e = Object.values(myObj2.results);
+
+
+                    for(var key in e){
+                        var value = e[key];
+                        // console.log(value);
+                        var li = document.createElement('li');
+                        li.textContent = value.currencyName +"-"+value.id;
+                        li.className = "currency1";
+                        li.setAttribute("data-name",value.currencyName);
+                        li.setAttribute("data-id",value.id);
+                        ul1.append(li);
+                    }
+                    for(var key in e){
+                        var value = e[key];
+                        // console.log(value);
+                        var li = document.createElement('li');
+                        li.textContent = value.currencyName +"-"+value.id;
+                        li.className = "currency2";
+                        li.setAttribute("data-name",value.currencyName);
+                        li.setAttribute("data-id",value.id);
+                        ul2.append(li);
+                    }
+                    getItem1();
+                    getItem2();
+                }
+            };
+        
+            xhttp.open("GET", "https://free.currconv.com/api/v7/currencies?apiKey=2c613b51e5104822513a", true);
+            xhttp.send();
+    }
+
+function getItem1(){
+
+    var currency = document.querySelectorAll('.currency1');
+    console.log(currency)
+    for(var i = 0;i<currency.length;i++){
+        currency[i].onclick = function(){
+
+            console.log(this.dataset.id);
+            console.log(this.dataset.name);
+            name1 = this.dataset.name;
+            id1 = this.dataset.id;
+            document.querySelectorAll('span')[0].innerHTML = id1;
+            document.querySelector('.pop-up1').style.display = 'none';
+
+        }
+    }
+}
+function getItem2(){
+
+var currency2 = document.querySelectorAll('.currency2');
+console.log(currency2)
+for(var i = 0;i<currency2.length;i++){
+    currency2[i].onclick = function(){
+
+        console.log(this.dataset.id);
+        console.log(this.dataset.name);
+        name2 = this.dataset.name;
+        id2 = this.dataset.id;
+        document.querySelectorAll('span')[1].innerHTML = id2;
+        document.querySelector('.pop-up2').style.display = 'none';
+    }
+}
+}
+
+function convert(a){
+
+    xhr  = new XMLHttpRequest();
+    console.log(id1);
+    console.log(id2);
+    xhr.open("GET","https://free.currconv.com/api/v7/convert?q="+id1+"_"+id2+"&compact=ultra&apiKey=2c613b51e5104822513a",true);
+    var input1 = document.getElementById('input1').value;
+    var input2 = document.getElementById('input2');
+    var result = 0;
+    xhr.onload = function(){
+
+        if(this.readyState == 4 ){
+            var myObj = JSON.parse(this.responseText);
+            console.log(this.responseText);
+            console.log(myObj)
+            for(var key in myObj){
+                var value = myObj[key];
+                console.log(value)
+                result = input1 * value;
+                input2.value = result;
+            }
+        }
+    };
+    xhr.send();
+
+}
+    // https://free.currconv.com/api/v7/currencies?apiKey=2c613b51e5104822513a
+
+
+
+</script>
+
+
+
+</body>
+</html>
